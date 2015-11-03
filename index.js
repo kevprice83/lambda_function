@@ -890,10 +890,10 @@ exports.handler = function(event, context) {
 
           var user = ['@', params.user_name].join('');
 
-          if(params.channel_name == "general" || "support" || "test_hooks") {
+          if(params.channel_name !== "general" && params.command == "/answer") {
             slack.webhook({
-              channel: user,
-              text: webhookText,
+              channel: webhookPostToChannel,
+              text: webhookTextAnswer,
               icon_emoji: "https://pbs.twimg.com/profile_images/515142703147786240/xq7U4u1C_400x400.png"
             }, function(err, response) {
               if(err) {
@@ -903,10 +903,10 @@ exports.handler = function(event, context) {
                 context.succeed();
               }
             });
-          } else if(params.command == "/answer") {
+          } else if(params.channel_name !== "general" && params.command == "/question") {
             slack.webhook({
               channel: webhookPostToChannel,
-              text: webhookTextAnswer,
+              text: webhookTextQuestion,
               icon_emoji: "https://pbs.twimg.com/profile_images/515142703147786240/xq7U4u1C_400x400.png"
             }, function(err, response) {
               if (err) {
@@ -918,8 +918,8 @@ exports.handler = function(event, context) {
             });
           } else {
               slack.webhook({
-                channel: webhookPostToChannel,
-                text: webhookTextQuestion,
+                channel: user,
+                text: webhookText,
                 icon_emoji: "https://pbs.twimg.com/profile_images/515142703147786240/xq7U4u1C_400x400.png"
 
               }, function(err, response) {
@@ -937,4 +937,3 @@ exports.handler = function(event, context) {
     context.fail(e);
   }
 };
-
